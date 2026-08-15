@@ -22,7 +22,7 @@ export default function ExercisesPage() {
       <header className="mb-8">
         <p className="eyebrow">Exercise finder / 60 movements</p>
         <h1 className="page-title">找到今天<br />真正需要的动作</h1>
-        <p className="mt-4 max-w-xl text-sm leading-7 text-muted">点击身体区域，再按器械缩小范围。每个动作都有原创路径图、动作规范与常见错误。</p>
+        <p className="mt-4 max-w-xl text-sm leading-7 text-muted">点击身体区域，再按器械缩小范围。每个动作都有动画演示（© Gym visual）、动作规范与常见错误。</p>
       </header>
       <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
         <aside className="space-y-5 lg:sticky lg:top-20 lg:self-start">
@@ -45,7 +45,13 @@ export default function ExercisesPage() {
             {filtered.map((exercise, index) => (
               <Link key={exercise.id} href={`/exercises/${exercise.slug}`} className="panel group min-h-[168px] rounded-xl p-4 transition-colors hover:border-primary/70">
                 <div className="flex items-start justify-between"><span className="font-display text-xs tracking-[.18em] text-primary">{String(index + 1).padStart(2, "0")} / {exercise.equipment}</span><ArrowUpRight size={18} className="text-muted transition-colors group-hover:text-primary" /></div>
-                <h2 className="mt-8 text-xl font-bold">{exercise.name}</h2>
+                {exercise.gifUrl && (
+                  <div className="mx-auto mt-3 flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-line bg-[#0c1117]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={exercise.gifUrl} alt={`${exercise.name}动作演示`} width={180} height={180} className="h-full w-full object-contain" loading="lazy" />
+                  </div>
+                )}
+                <h2 className="mt-4 text-xl font-bold">{exercise.name}</h2>
                 <p className="mt-2 text-sm text-muted">主练 {exercise.primaryMuscle} · {exercise.difficulty}</p>
                 <div className="mt-4 flex gap-2">{exercise.secondaryMuscles.slice(0, 2).map((item) => <span className="tag" key={item}>{item}</span>)}</div>
               </Link>

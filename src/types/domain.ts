@@ -20,7 +20,7 @@ export type Movement =
   | "core";
 
 export interface MediaCredit {
-  kind: "original-vector" | "licensed-video";
+  kind: "original-vector" | "licensed-video" | "licensed-gif";
   author: string;
   sourceUrl?: string;
   licenseName: string;
@@ -42,6 +42,8 @@ export interface Exercise {
   cues: string[];
   mistakes: string[];
   alternatives: string[];
+  /** 动作演示 GIF 的站内路径（来自 exercises-dataset，© Gym visual）。 */
+  gifUrl?: string;
   media: MediaCredit;
 }
 
