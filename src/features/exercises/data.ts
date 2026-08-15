@@ -122,20 +122,96 @@ const originalMedia = {
   licenseName: "项目原创矢量演示",
 };
 
-const baseExercises = seeds.map<Exercise>(([slug, name, primaryMuscle, equipment, difficulty, movement, secondaryMuscles, aliases = []]) => ({
-  id: `exercise_${slug}`,
-  slug,
-  name,
-  aliases,
-  primaryMuscle,
-  secondaryMuscles,
-  equipment,
-  difficulty,
-  movement,
-  ...movementCopy[movement],
-  alternatives: [],
-  media: originalMedia,
-}));
+/** 来自 https://github.com/hasaneyldrm/exercises-dataset 的授权演示 GIF（© Gym visual，180×180）。 */
+const datasetMedia = {
+  kind: "licensed-gif" as const,
+  author: "Gym visual",
+  sourceUrl: "https://github.com/hasaneyldrm/exercises-dataset",
+  licenseName: "© Gym visual — https://gymvisual.com/",
+  licenseUrl: "https://gymvisual.com/content/3-terms-and-conditions-of-use",
+};
+
+/** 每个动作对应的 exercises-dataset 媒体 id，用于定位 public/exercises/<slug>.gif。 */
+const mediaIds: Record<string, string> = {
+  "barbell-bench-press": "0025", // barbell bench press
+  "incline-dumbbell-press": "0314", // dumbbell incline bench press
+  "cable-chest-fly": "1269", // cable standing up straight crossovers
+  "machine-chest-press": "0576", // lever chest press
+  "push-up": "0662", // push-up
+  "incline-barbell-press": "0047", // barbell incline bench press
+  "dumbbell-fly": "0308", // dumbbell fly
+  "chest-dip": "0251", // chest dip
+  "pec-deck": "0596", // lever seated fly
+  "pull-up": "0652", // pull-up
+  "lat-pulldown": "0198", // cable pulldown
+  "barbell-row": "0027", // barbell bent over row
+  "one-arm-dumbbell-row": "0292", // dumbbell one arm bent-over row
+  "seated-cable-row": "0861", // cable seated row
+  "straight-arm-pulldown": "0238", // cable straight arm pulldown
+  "chest-supported-row": "1351", // lever t-bar reverse grip row
+  "inverted-row": "0499", // inverted row
+  "rack-pull": "0074", // barbell rack pull
+  "barbell-back-squat": "0043", // barbell full squat
+  "front-squat": "0042", // barbell front squat
+  "goblet-squat": "1760", // dumbbell goblet squat
+  "leg-press": "0739", // sled 45в° leg press
+  "bulgarian-split-squat": "0410", // dumbbell single leg split squat
+  "walking-lunge": "0336", // dumbbell lunge
+  "leg-extension": "0585", // lever leg extension
+  "lying-leg-curl": "0586", // lever lying leg curl
+  "romanian-deadlift": "0085", // barbell romanian deadlift
+  "dumbbell-rdl": "1459", // dumbbell romanian deadlift
+  "machine-calf-raise": "0605", // lever standing calf raise
+  "single-leg-calf-raise": "0727", // single leg calf raise (on a dumbbell)
+  "barbell-hip-thrust": "3562", // barbell glute bridge two legs on bench (male)
+  "glute-bridge": "3013", // low glute bridge on floor
+  "cable-kickback": "0228", // cable standing hip extension
+  "hip-abduction": "0597", // lever seated hip abduction
+  "sumo-squat": "0413", // dumbbell squat
+  "step-up": "0431", // dumbbell step-up
+  "overhead-press": "1456", // barbell standing close grip military press
+  "dumbbell-shoulder-press": "0405", // dumbbell seated shoulder press
+  "dumbbell-lateral-raise": "0334", // dumbbell lateral raise
+  "cable-lateral-raise": "0192", // cable one arm lateral raise
+  "reverse-pec-deck": "0602", // lever seated reverse fly
+  "face-pull": "0233", // cable standing rear delt row (with rope)
+  "machine-shoulder-press": "0603", // lever shoulder press
+  "dumbbell-front-raise": "0310", // dumbbell front raise
+  "barbell-curl": "0031", // barbell curl
+  "alternating-dumbbell-curl": "0294", // dumbbell biceps curl
+  "hammer-curl": "0313", // dumbbell hammer curl
+  "cable-curl": "0868", // cable curl
+  "preacher-curl": "0070", // barbell preacher curl
+  "triceps-pushdown": "0200", // cable pushdown (with rope attachment)
+  "overhead-cable-extension": "0194", // cable overhead triceps extension (rope attachment)
+  "skull-crusher": "0060", // barbell lying triceps extension skull crusher
+  "close-grip-bench": "0030", // barbell close-grip bench press
+  "plank": "3665", // power point plank
+  "dead-bug": "0276", // dead bug
+  "hanging-leg-raise": "0472", // hanging leg raise
+  "cable-crunch": "0175", // cable kneeling crunch
+  "ab-wheel": "0857", // wheel rollerout
+  "pallof-press": "0979", // band horizontal pallof press
+};
+
+const baseExercises = seeds.map<Exercise>(([slug, name, primaryMuscle, equipment, difficulty, movement, secondaryMuscles, aliases = []]) => {
+  const hasDatasetMedia = Boolean(mediaIds[slug]);
+  return {
+    id: `exercise_${slug}`,
+    slug,
+    name,
+    aliases,
+    primaryMuscle,
+    secondaryMuscles,
+    equipment,
+    difficulty,
+    movement,
+    ...movementCopy[movement],
+    alternatives: [],
+    gifUrl: hasDatasetMedia ? `/exercises/${slug}.gif` : undefined,
+    media: hasDatasetMedia ? datasetMedia : originalMedia,
+  };
+});
 
 export const exercises: Exercise[] = baseExercises.map((exercise) => ({
   ...exercise,

@@ -8,7 +8,8 @@ import { syncNow, type SyncResult } from "@/lib/sync";
 
 export function SyncStatus() {
   const pending = useLiveQuery(() => db.syncQueue.count(), [], 0);
-  const [online, setOnline] = useState(() => typeof navigator === "undefined" || navigator.onLine);
+  // 初始默认在线，避免 SSR 与客户端在 navigator.onLine 上产生水合不一致。
+  const [online, setOnline] = useState(true);
   const [status, setStatus] = useState<SyncResult>("local-only");
   const [syncing, setSyncing] = useState(false);
 

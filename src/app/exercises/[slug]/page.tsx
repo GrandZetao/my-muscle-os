@@ -20,8 +20,22 @@ export default async function ExerciseDetailPage({ params }: { params: Promise<{
           <p className="eyebrow">{exercise.equipment} / {exercise.difficulty}</p>
           <h1 className="page-title">{exercise.name}</h1>
           <p className="mt-4 text-muted">主练 {exercise.primaryMuscle}{exercise.secondaryMuscles.length ? ` · 辅助 ${exercise.secondaryMuscles.join("、")}` : ""}</p>
-          <div className="mt-6"><ExerciseDemo movement={exercise.movement} muscle={exercise.primaryMuscle} name={exercise.name} /></div>
-          <p className="mt-3 text-xs text-muted">{exercise.media.author} · {exercise.media.licenseName}</p>
+          <div className="mt-6">
+            {exercise.gifUrl ? (
+              <figure className="relative overflow-hidden rounded-xl border border-line bg-[#0c1117] p-4">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={exercise.gifUrl} alt={`${exercise.name}动作演示`} width={180} height={180} className="mx-auto aspect-square object-contain" loading="lazy" />
+                <figcaption className="sr-only">动作演示 GIF，来自 exercises-dataset（© Gym visual）。</figcaption>
+              </figure>
+            ) : (
+              <ExerciseDemo movement={exercise.movement} muscle={exercise.primaryMuscle} name={exercise.name} />
+            )}
+          </div>
+          <p className="mt-3 text-xs text-muted">
+            {exercise.media.sourceUrl ? <a className="underline decoration-dotted underline-offset-2 hover:text-white" href={exercise.media.sourceUrl} target="_blank" rel="noreferrer">{exercise.media.author}</a> : exercise.media.author}
+            {" · "}
+            {exercise.media.licenseUrl ? <a className="underline decoration-dotted underline-offset-2 hover:text-white" href={exercise.media.licenseUrl} target="_blank" rel="noreferrer">{exercise.media.licenseName}</a> : exercise.media.licenseName}
+          </p>
         </div>
         <div className="space-y-4">
           <section className="panel rounded-xl p-5">
